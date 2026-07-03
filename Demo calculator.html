@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aesthetic Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, #1c1c1e, #09090b);
+            overflow: hidden;
+        }
+
+        /* Abstract ambient glowing background shapes */
+        .bg-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.2;
+            top: 20%;
+            left: 30%;
+            z-index: 1;
+        }
+
+        /* Calculator Container */
+        .calculator {
+            position: relative;
+            z-index: 10;
+            width: 340px;
+            background: rgba(20, 20, 25, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Screen Display */
+        .display {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: flex-end;
+            height: 110px;
+            padding: 12px 8px;
+            margin-bottom: 24px;
+            overflow: hidden;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .history {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.4);
+            min-height: 20px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+        }
+
+        .current {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #ffffff;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+            transition: font-size 0.15s ease;
+        }
+
+        /* Grid Layout */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        /* Button Styling */
+        button {
+            border: none;
+            outline: none;
+            height: 64px;
+            border-radius: 18px;
+            font-size: 1.35rem;
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        /* Number Buttons */
+        .btn-num {
+            background: rgba(255, 255, 255, 0.05);
+            color: #f4f4f5;
+        }
+        
+        .btn-num:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-num:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Operator Buttons */
+        .btn-op {
+            background: rgba(99, 102, 241, 0.15);
+            color: #818cf8;
+            font-weight: 500;
+        }
+
+        .btn-op:hover {
+            background: rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-op:active {
+            transform: scale(0.94);
+        }
+
+        /* Function Buttons (AC, Backspace) */
+        .btn-func {
+            background: rgba(255, 255, 255, 0.02);
+            color: #a1a1aa;
+        }
+
+        .btn-func:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #f4f4f5;
+        }
+
+        /* Equals Button */
+        .btn-equal {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-equal:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-equal:active {
+            transform: scale(0.94);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="calculator">
+        <div class="display">
+            <div class="history" id="history"></div>
+            <div class="current" id="current">0</div>
+        </div>
+        <div class="buttons">
+            <!-- Row 1 -->
+            <button class="btn-func" onclick="clearAll()">AC</button>
+            <button class="btn-func" onclick="deleteLast()">⌫</button>
+            <button class="btn-op" onclick="appendOperator('%')">%</button>
+            <button class="btn-op" onclick="appendOperator('/')">÷</button>
+
+            <!-- Row 2 -->
+            <button class="btn-num" onclick="appendNumber('7')">7</button>
+            <button class="btn-num" onclick="appendNumber('8')">8</button>
+            <button class="btn-num" onclick="appendNumber('9')">9</button>
+            <button class="btn-op" onclick="appendOperator('*')">×</button>
+
+            <!-- Row 3 -->
+            <button class="btn-num" onclick="appendNumber('4')">4</button>
+            <button class="btn-num" onclick="appendNumber('5')">5</button>
+            <button class="btn-num" onclick="appendNumber('6')">6</button>
+            <button class="btn-op" onclick="appendOperator('-')">−</button>
+
+            <!-- Row 4 -->
+            <button class="btn-num" onclick="appendNumber('1')">1</button>
+            <button class="btn-num" onclick="appendNumber('2')">2</button>
+            <button class="btn-num" onclick="appendNumber('3')">3</button>
+            <button class="btn-op" onclick="appendOperator('+')">+</button>
+
+            <!-- Row 5 -->
+            <button class="btn-num" style="grid-column: span 2;" onclick="appendNumber('0')">0</button>
+            <button class="btn-num" onclick="appendNumber('.')">.</button>
+            <button class="btn-equal" onclick="compute()">=</button>
+        </div>
+    </div>
+
+    <script>
+        const currentDisplay = document.getElementById('current');
+        const historyDisplay = document.getElementById('history');
+        
+        let currentInput = '0';
+        let previousInput = '';
+        let operator = null;
+        let shouldResetScreen = false;
+
+        function appendNumber(number) {
+            if (currentInput === '0' || shouldResetScreen) {
+                resetScreen();
+            }
+            if (number === '.' && currentInput.includes('.')) return;
+            currentInput += number;
+            updateDisplay();
+        }
+
+        function resetScreen() {
+            currentInput = '';
+            shouldResetScreen = false;
+        }
+
+        function clearAll() {
+            currentInput = '0';
+            previousInput = '';
+            operator = null;
+            historyDisplay.innerText = '';
+            updateDisplay();
+        }
+
+        function deleteLast() {
+            if (shouldResetScreen) return;
+            if (currentInput.length <= 1) {
+                currentInput = '0';
+            } else {
+                currentInput = currentInput.slice(0, -1);
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (operator !== null && !shouldResetScreen) compute();
+            previousInput = currentInput;
+            operator = op;
+            // Display map for nice symbols
+            const opSymbols = { '+': '+', '-': '−', '*': '×', '/': '÷', '%': '%' };
+            historyDisplay.innerText = `${previousInput} ${opSymbols[op] || op}`;
+            shouldResetScreen = true;
+        }
+
+        function compute() {
+            if (operator === null || shouldResetScreen) return;
+            
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            
+            if (isNaN(prev) || isNaN(current)) return;
+
+            switch (operator) {
+                case '+': result = prev + current; break;
+                case '-': result = prev - current; break;
+                case '*': result = prev * current; break;
+                case '/': 
+                    if (current === 0) {
+                        currentInput = "Error";
+                        updateDisplay();
+                        shouldResetScreen = true;
+                        return;
+                    }
+                    result = prev / current; 
+                    break;
+                case '%': result = prev % current; break;
+                default: return;
+            }
+
+            // Handle decimal precision issues cleanly
+            currentInput = Math.round(result * 1e10) / 1e10;
+            historyDisplay.innerText += ` ${current} =`;
+            operator = null;
+            shouldResetScreen = true;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            // Dynamically scale down font if the number gets too long
+            if (currentInput.toString().length > 10) {
+                currentDisplay.style.fontSize = '1.8rem';
+            } else if (currentInput.toString().length > 7) {
+                currentDisplay.style.fontSize = '2.1rem';
+            } else {
+                currentDisplay.style.fontSize = '2.5rem';
+            }
+            currentDisplay.innerText = currentInput;
+        }
+    </script>
+</body>
+</html>

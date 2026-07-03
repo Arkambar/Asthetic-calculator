@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, #1c1c1e, #09090b);
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            top: 25%;
+            left: 35%;
+            z-index: 1;
+        }
+
+        .error-card {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .error-code {
+            font-size: 5.5rem;
+            font-weight: 200;
+            color: #818cf8;
+            line-height: 1;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .error-title {
+            font-size: 1.4rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #f4f4f5;
+        }
+
+        .error-desc {
+            font-size: 0.95rem;
+            color: #a1a1aa;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .btn-home {
+            display: inline-block;
+            text-decoration: none;
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 14px 32px;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            transition: all 0.15s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        .btn-home:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-home:active {
+            transform: translateY(0) scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="glow"></div>
+
+    <div class="error-card">
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page Missing</h1>
+        <p class="error-desc">
+            The path you are trying to compute doesn't exist or has been relocated.
+        </p>
+        <!-- Uses JS to safely drop back to the root level file -->
+        <button class="btn-home" onclick="goToHome()">Return to Calculator</button>
+    </div>
+
+    <script>
+        function goToHome() {
+            // This forces the browser to look at the root domain + your exact file name
+            window.location.origin; 
+            window.location.href = window.location.origin + "/Demo%20calculator.html";
+        }
+    </script>
+</body>
+</html>
